@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %} Schema list {% endblock %}
+{% block content %}
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Title</th>
+      <th scope="col">Modified</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for schema in schemas %}
+    <tr>
+      <th scope="row">1</th>
+      <td><a href="{{schema.get_detail_url}}">{{ schema.name}}</a></td>
+      <td>{{schema.modified}}</td>
+      <td><a href="{{schema.get_update_url}}" class="btn btn-primary">Update</a> <a href="{{schema.get_delete_url}}"
+                                                                      class="btn btn-danger">
+        Delete</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><a href="{% url 'schema_create' %}" class=" btn btn-primary ">Create Schema</a> </p>
+{% endblock %}
+

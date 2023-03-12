@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} Schema list {% endblock %}
+{% block content %}
+<h2>{{schema.name}} Schema</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Column name</th>
+      <th scope="col">Column type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="col">{{ schema.order}}</th>
+      <td>{{ schema.data_name}}</td>
+      <td>{{schema.data_type}}</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
