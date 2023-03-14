@@ -1,14 +1,13 @@
 from django import forms
 from django.forms import modelformset_factory
 
-from engine.models import Schema
+from engine.models import Schema, Data
 
 
 class SchemaForm(forms.ModelForm):
     class Meta:
         model = Schema
-        fields = ['name', 'data_name', 'data_type', 'order']
+        fields = ['name']
 
-SchemaFormSet = modelformset_factory(
-    Schema, fields=("name", "data_name", 'data_type', 'order'), extra=1
-)
+
+DataFormSet = modelformset_factory(Data, fields=("data_name", 'data_type', 'order'), extra=1)

@@ -8,6 +8,9 @@
         <div class="form-outline mb-10">
             <label class="form-label">Username</label>
             {{ field }}
+            {% if field.error %}
+                {{ field.error }}
+            {% endif %}
         </div>
         {% endfor %}
           <div class="row mb-4">

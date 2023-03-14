@@ -2,6 +2,7 @@
 {% block title %} Schema list {% endblock %}
 {% block content %}
 <h2>{{schema.name}} Schema</h2>
+{{data}}
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -11,11 +12,13 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="col">{{ schema.order}}</th>
-      <td>{{ schema.data_name}}</td>
-      <td>{{schema.data_type}}</td>
+  {% for str in data%}
+  <tr>
+      <th scope="col">{{ str.order}}</th>
+      <td>{{ str.data_name}}</td>
+      <td>{{str.get_data_type_display}}</td>
     </tr>
+    {% endfor%}
   </tbody>
 </table>
 {% endblock %}
