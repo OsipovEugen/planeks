@@ -5,11 +5,13 @@
     <h1>Add a new Schema</h1>
     <form id="form-container" method="POST">
         {% csrf_token %}
-        {{schema_formset.management_form}}
-        {% for form in schema_formset %}
+        {{schema_form}}
+        {{data_formset.management_form}}
+        {% for form in data_formset %}
         <div class="schema-form">
-        {{form.as_p}}
+            {{form.as_p}}
         </div>
+
         {% endfor %}
         <button id="add-form" type="button">Add Another Schema</button>
         <button type="submit">Create Schema</button>

@@ -18,14 +18,11 @@ CHOICES = (
 
 
 class Schema(models.Model):
-    name = models.CharField(max_length=50)
-    data_name = models.CharField(max_length=30, verbose_name="Column name")
-    data_type = models.CharField(max_length=30, choices=CHOICES,  default="Choose...",  verbose_name="Type")
-    order = models.IntegerField(default="0")
-    modified = models.DateTimeField(auto_now_add=True, blank=True, null=False)
+    name = models.CharField(max_length=50, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Name -  {self.name} ID - {self.id}"
+        return f"Name -  {self.name} ID - {self.pk}"
 
     def get_detail_url(self, *args, **kwargs):
         return reverse('schema_detail', kwargs={'pk': self.pk})
@@ -35,5 +32,15 @@ class Schema(models.Model):
 
     def get_delete_url(self, *args, **kwargs):
         return reverse('schema_delete', kwargs={'pk': self.pk})
+
+
+class Data(models.Model):
+    data_name = models.CharField(max_length=30, verbose_name="Column name")
+    data_type = models.CharField(max_length=30, choices=CHOICES, default="Choose...", verbose_name="Type")
+    order = models.IntegerField(default="0")
+    created_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"ID -  {self.data_name} "
 
 
