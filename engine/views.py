@@ -69,7 +69,7 @@ class SchemaDetailView(DetailView):
         try:
             os.listdir(schema_path)
             schema_list = os.listdir(schema_path)
-            context['schema_files'] = schema_list[::-1]
+            context['schema_files'] = schema_list
         except FileNotFoundError:
             pass
         context['data'] = data
@@ -90,7 +90,6 @@ def export_csv(request, pk):
     schema_path = os.path.join(settings.MEDIA_ROOT, schema.name)
 
     if not os.path.exists(schema_path):
-        print('here')
         os.makedirs(schema_path)
 
     with open(f"media/{schema.name}/{schema.name}_{datetime.datetime.now().strftime('%H_%M_%S')}.csv", 'x', newline='',
@@ -98,11 +97,18 @@ def export_csv(request, pk):
         writer = csv.writer(f)
         writer.writerow(['Order', 'Column Name', 'Column Type'])
         data_fields = data.values_list('order', 'data_name', 'data_type')
+
         while amount != 0:
             for d in data_fields:
                 writer.writerow(d)
             amount -= 1
-    return JsonResponse(data={})
+    file_name = f"{'/'.join(f.name.split('/')[2:])}"
+    link_start = f'<a href="/download/{file_name}" class="btn btn-primary"> Download'
+    link_end = "</a'>"
+    order = len(os.listdir(schema_path))
+    data = {'file_name': file_name, 'link_start': link_start, 'link_end': link_end, 'order': order}
+
+    return JsonResponse(data)
 
 
 def download(request, schema_name):

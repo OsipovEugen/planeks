@@ -32,15 +32,15 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Column name</th>
+            <th scope="col">File name</th>
             <th scope="col">Status</th>
             <th scope="col">Actions</th>
 
         </tr>
         </thead>
-        <tbody>
+        <tbody id="flex-table">
         {% for file in schema_files%}
-        <tr>
+        <tr >
             <th scope="col">{{ forloop.counter }}</th>
             <td>{{ file }}</td>
             <td>Ready</td>
