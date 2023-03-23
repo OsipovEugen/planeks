@@ -2,23 +2,23 @@
 {% block title %} Schema list {% endblock %}
 {% block content %}
 {% if request.user.is_authenticated %}
-    <h1>Add a new Schema</h1>
-    <form id="form-container" method="POST">
-        {% csrf_token %}
-        {{schema_form}}
-        {{data_formset.management_form}}
-        {% for form in data_formset %}
-        <div class="schema-form">
-            {{form.as_p}}
-        </div>
+<h1>Add a new Schema</h1>
+<form id="form-container" method="POST">
+    {% csrf_token %}
+    {{schema_form}}
+    {{data_formset.management_form}}
+    {% for form in data_formset %}
+    <div class="schema-form">
+        {{form}}
+    </div>
 
-        {% endfor %}
-        <button id="add-form" type="button">Add Another Schema</button>
-        <button type="submit">Create Schema</button>
-    </form>
+    {% endfor %}
+    <button id="add-form" type="button">Add Another Schema</button>
+    <button type="submit">Create Schema</button>
+</form>
 
 
-    <script>
+<script>
         let schemaForm = document.querySelectorAll(".schema-form")
         let container = document.querySelector("#form-container")
         let addButton = document.querySelector("#add-form")
@@ -39,7 +39,8 @@
 
             totalForms.setAttribute('value', `${formNum+1}`)
         }
-    </script>
+
+</script>
 {% else %}
 <h1> Plese Log in to create schemas </h1>
 {% endif %}

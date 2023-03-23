@@ -1,7 +1,12 @@
+import csv
+import datetime
+
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, ListView, UpdateView, DeleteView, DetailView
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView, ListView, UpdateView, DeleteView, DetailView
 
 from engine.forms import SchemaForm, DataFormSet
 from engine.models import Schema, Data
@@ -20,6 +25,7 @@ class SchemaListView(ListView):
     model = Schema
     template_name = 'engine/schema_list.html'
     context_object_name = 'schemas'
+
 
 class SchemaAddView(TemplateView):
     template_name = "engine/schema_create.html"
@@ -57,7 +63,9 @@ class SchemaDetailView(DetailView):
     model = Schema
     template_name = 'engine/schema_detail.html'
     context_object_name = 'schema'
+
     def get_context_data(self, **kwargs):
+        print(self.request)
         context = super().get_context_data(**kwargs)
         schema = Schema.objects.get(pk=self.kwargs['pk'])
         data = Data.objects.filter(created_at=schema.created_at)
@@ -71,3 +79,20 @@ class SchemaDeleteView(DeleteView):
     template_name = 'engine/schema_delete.html'
 
 
+@csrf_exempt
+def export_csv(request, pk):
+    amount = int(request.POST.get('amount'))
+    schema = Schema.objects.get(id=pk)
+    data = Data.objects.filter(created_at=schema.created_at)
+    response = HttpResponse(content_type='text/csv')
+
+    with open(f"media/{schema.name}_{datetime.datetime.now().strftime('%H_%M_%S')}.csv", 'x', newline='',
+              encoding='UTF8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Order', 'Column Name', 'Column Type'])
+        data_fields = data.values_list('order', 'data_name', 'data_type')
+        while amount != 0:
+            for d in data_fields:
+                writer.writerow(d)
+            amount -= 1
+    return JsonResponse(data={})

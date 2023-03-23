@@ -41,6 +41,6 @@ class Data(models.Model):
     created_at = models.DateTimeField()
 
     def __str__(self):
-        return f"ID -  {self.data_name} "
+        return f"ID -  {self.pk} "
 
 
