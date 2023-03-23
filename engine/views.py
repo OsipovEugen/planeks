@@ -1,9 +1,11 @@
 import csv
 import datetime
+import os
 
+from django.conf import settings
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView, DetailView
@@ -15,11 +17,6 @@ from engine.models import Schema, Data
 class CustomLoginView(LoginView):
     template_name = 'engine/login.html'
 
-
-# class SchemaCreate(CreateView):
-#     form_class = SchemaForm
-#     success_url = '/home'
-#     template_name = 'engine/schema_create.html'
 
 class SchemaListView(ListView):
     model = Schema
@@ -65,10 +62,16 @@ class SchemaDetailView(DetailView):
     context_object_name = 'schema'
 
     def get_context_data(self, **kwargs):
-        print(self.request)
         context = super().get_context_data(**kwargs)
         schema = Schema.objects.get(pk=self.kwargs['pk'])
         data = Data.objects.filter(created_at=schema.created_at)
+        schema_path = os.path.join(settings.MEDIA_ROOT, schema.name)
+        try:
+            os.listdir(schema_path)
+            schema_list = os.listdir(schema_path)
+            context['schema_files'] = schema_list[::-1]
+        except FileNotFoundError:
+            pass
         context['data'] = data
         return context
 
@@ -84,9 +87,13 @@ def export_csv(request, pk):
     amount = int(request.POST.get('amount'))
     schema = Schema.objects.get(id=pk)
     data = Data.objects.filter(created_at=schema.created_at)
-    response = HttpResponse(content_type='text/csv')
+    schema_path = os.path.join(settings.MEDIA_ROOT, schema.name)
 
-    with open(f"media/{schema.name}_{datetime.datetime.now().strftime('%H_%M_%S')}.csv", 'x', newline='',
+    if not os.path.exists(schema_path):
+        print('here')
+        os.makedirs(schema_path)
+
+    with open(f"media/{schema.name}/{schema.name}_{datetime.datetime.now().strftime('%H_%M_%S')}.csv", 'x', newline='',
               encoding='UTF8') as f:
         writer = csv.writer(f)
         writer.writerow(['Order', 'Column Name', 'Column Type'])
@@ -96,3 +103,15 @@ def export_csv(request, pk):
                 writer.writerow(d)
             amount -= 1
     return JsonResponse(data={})
+
+
+def download(request, schema_name):
+    schema_path = os.path.join(settings.MEDIA_ROOT, schema_name.split('_', maxsplit=1)[0])
+    for file in os.listdir(schema_path):
+        if file == schema_name:
+            schema_path = os.path.join(schema_path, file)
+            break
+    with open(schema_path, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{schema_path}"'
+        return response
