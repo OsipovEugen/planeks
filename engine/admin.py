@@ -10,5 +10,6 @@ class DataAdmin(admin.ModelAdmin):
 class SchemaAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_at')
 
+
 admin.site.register(Schema, SchemaAdmin)
 admin.site.register(Data, DataAdmin)
