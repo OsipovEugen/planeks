@@ -3,19 +3,25 @@ import datetime
 import os
 
 from django.conf import settings
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView, DetailView
 
-from engine.forms import SchemaForm, DataFormSet
+from engine.forms import SchemaForm, DataFormSet, UserLoginForm
 from engine.models import Schema, Data
 
 
 class CustomLoginView(LoginView):
     template_name = 'engine/login.html'
+    authentication_form = UserLoginForm
+
+
+class CustomLogoutView(LogoutView):
+    # template_name = 'en'
+    next_page = reverse_lazy('schema_list')
 
 
 class SchemaListView(ListView):
@@ -30,6 +36,7 @@ class SchemaAddView(TemplateView):
     def get(self, *args, **kwargs):
         schema_form = SchemaForm
         data_formset = DataFormSet(queryset=Schema.objects.none())
+        print(data_formset)
 
         return self.render_to_response({'data_formset': data_formset, 'schema_form': schema_form})
 
@@ -72,7 +79,7 @@ class SchemaDetailView(DetailView):
             context['schema_files'] = schema_list
         except FileNotFoundError:
             pass
-        context['data'] = data
+        context['data'] = data[:3]
         return context
 
 
