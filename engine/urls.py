@@ -1,10 +1,11 @@
 from django.urls import path
 
 from engine.views import CustomLoginView, SchemaAddView, SchemaListView, SchemaUpdateView, SchemaDeleteView, \
-    SchemaDetailView, export_csv, download
+    SchemaDetailView, export_csv, download, CustomLogoutView
 
 urlpatterns = [
     path('', CustomLoginView.as_view(), name='login'),
+    path('logout/', CustomLogoutView. as_view(), name='logout'),
     path('schema_create/', SchemaAddView.as_view(), name='schema_create'),
     path('schema_list/', SchemaListView.as_view(), name='schema_list'),
     path('schema_update/<int:pk>', SchemaUpdateView.as_view(), name='schema_update'),

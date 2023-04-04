@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block title %} Schema detail {% endblock %}
 {% block content %}
 <h2>{{schema.name}} Schema</h2>
-{{data}}
 <form method="post" action="{% url 'export' pk=schema.pk %}" id="schema_create">
-    <input class="schema-form" name="amount">
-    <button type="submit" class="btn btn-primary">Create</button>
+    <div class="form-row">
+        <input class="schema-form form-control col-1" name="amount">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+
 
 </form>
-<table class="table table-bordered">
+<table class="table table-bordered" style="width:30%">
     <thead>
     <tr>
         <th scope="col">#</th>
@@ -28,26 +31,31 @@
 </table>
 
 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">File name</th>
-            <th scope="col">Status</th>
-            <th scope="col">Actions</th>
+<table class="table table-bordered" style="width:60%">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">File name</th>
+        <th scope="col">Status</th>
+        <th scope="col">Actions</th>
 
-        </tr>
-        </thead>
-        <tbody id="flex-table">
-        {% for file in schema_files%}
-        <tr >
-            <th scope="col">{{ forloop.counter }}</th>
-            <td>{{ file }}</td>
-            <td>Ready</td>
-            <td><a href="{% url 'download' schema_name=file %}" class="btn btn-primary">Download</a></td>
+    </tr>
+    </thead>
+    <tbody id="flex-table">
+    {% for file in schema_files%}
+    <tr>
+        <th scope="col">{{ forloop.counter }}</th>
+        <td>{{ file }}</td>
+        <td style="  border-radius: 15px;
+  background: #73AD21;
+  padding: 13px;
+  width: 14px;
+  height: 14px;">Ready
+        </td>
+        <td><a href="{% url 'download' schema_name=file %}" class="btn btn-primary">Download</a></td>
 
-        </tr>
-        {% endfor%}
-        </tbody>
-    </table>
+    </tr>
+    {% endfor%}
+    </tbody>
+</table>
 {% endblock %}

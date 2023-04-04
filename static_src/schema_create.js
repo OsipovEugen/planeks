@@ -14,7 +14,7 @@ $(function ($){
                 added_row = '<tr>'
                     + '<th scope="col">' + response['responseJSON']['order'] +  '</th>'
                     + '<td>' + response['responseJSON']['file_name'] +  '</td>'
-                    + '<td>' + 'Ready' +  '</td>'
+                    + '<td >' + 'Ready' +  '</td>'
                     + '<td>' + response['responseJSON']['link_start'] + response['responseJSON']['link_end'] + '</td>'
                     + '</tr>'
                 $('#flex-table').append(added_row)
